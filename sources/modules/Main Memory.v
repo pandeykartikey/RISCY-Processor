@@ -22,20 +22,20 @@
 
 module MainMemoryModule(
     input wire clk,
-    input wire [31:0] Address,
-    input wire ReadEnable,
-    input wire WriteEnable,
-    input wire [31:0] DataIn,
-    output wire [31:0] DataOut
+    input wire [31:0] address,
+    input wire readEnable,
+    input wire writeEnable,
+    input wire [31:0] dataIn,
+    output wire [31:0] dataOut
     );
 reg [31:0] memory[8*1024:0];
 
 always @(posedge clk) begin
-    if(WriteEnable & !ReadEnable) begin
-        memory[Address] = DataIn;
+    if(writeEnable & !readEnable) begin
+        memory[address] = dataIn;
     end 
 end
 
-assign DataOut = memory[Address]; 
+assign dataOut = memory[address]; 
 
 endmodule
