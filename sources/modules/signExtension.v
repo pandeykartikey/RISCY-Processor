@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 26.09.2017 22:44:01
+// Create Date: 27.09.2017 13:35:24
 // Design Name: 
-// Module Name: InstructionMemoryModule
+// Module Name: signExtension
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,17 +20,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module InstructionMemoryModule(
-    input wire clk,
-    input wire [31:0] instructionAddress,
-    output wire [31:0] instruction
+module signExtension(
+    input [15:0] in,
+    output [31:0] out
     );
-MainMemoryModule instructionMemory(
-    .clk(clk),
-    .address(InstructionAddress),
-    .readEnable(1),
-    .writeEnable(0),
-    .dataIn(0),
-    .dataOut(instruction));
-
+    assign out = {{16{in[15]}},in[15:0]};
 endmodule
