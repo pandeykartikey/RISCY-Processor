@@ -13,6 +13,7 @@ module control_unit(
     output reg       Jump
 );
 
+wire [5:0] opcode;
 assign opcode = instruction[31:26];
 
 

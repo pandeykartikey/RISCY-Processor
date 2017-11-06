@@ -1,24 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 29.09.2017 02:18:40
-// Design Name: 
-// Module Name: cpu
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module cpu(
 input clk,
@@ -120,6 +100,7 @@ ALU alu(.a(reg1data),
  always @(posedge clk)
      begin
          $display("INSTRUCTION=%h - reg_radd0=%d - reg_radd1=%d - reg1data=%d - alu_operand=%d - alu_op=%d - alu_control_otp=%d - alu_otp=%d",
+
              instruction,
              instruction[25:21], 
              instruction[20:16], 
