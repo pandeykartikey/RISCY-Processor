@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 26.09.2017 22:44:01
+// Create Date: 29.09.2017 11:32:04
 // Design Name: 
-// Module Name: InstructionMemoryModule
+// Module Name: regmux2x1
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,11 +20,11 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module InstructionMemoryModule(
-    input wire clk,
-    input wire [31:0] instructionAddress,
-    output wire [31:0] instruction
-    );
-
+module regmux2x1(in0,in1,select,out);
+input wire select; 
+input wire [4:0] in0;
+input wire [4:0] in1;
+output wire[4:0] out;
+assign out = (select==0)?in0:in1;
 
 endmodule

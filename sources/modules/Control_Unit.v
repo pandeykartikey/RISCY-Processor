@@ -1,8 +1,7 @@
 `timescale 1ns / 1ps
 
 module control_unit(
-    input [31:0] instruction, //opcode
-
+    input [31:0] instruction,
     output reg       RegDst,
     output reg       MemRead,
     output reg       MemToReg,
@@ -22,17 +21,17 @@ always @(instruction)
     	RegDst   = 0;
         MemRead  = 0;
         MemToReg = 0;
-        ALUOp    = b'00;
+        ALUOp    = 2'b00;
         MemWrite = 0;
         ALUSrc   = 0;
         RegWrite = 0;
         Branch   = 0;
         Jump     = 0;
 
-        if (opcode == 6b'000000)
+        if (opcode == 6'b000000)
         begin
             // R-Format Instruction
-            ALUOp = b'10;
+            ALUOp = 2'b10;
             RegDst = 1;
             RegWrite = 1;
         end
