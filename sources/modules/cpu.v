@@ -62,13 +62,15 @@ module cpu(
 
     assign reg_radd1 = instruction[20:16];
 
-    regmux2x1 reg_wr_dst(.select(reg_wr_add_control),
+    regmux2x1 reg_wr_dst(
+        .select(reg_wr_add_control),
         .in0(reg_radd1),
         .in1(instruction[15:11]),
         .out(reg_waddr)
         );
 
-    Register_File regfile(.clk(clk),
+    Register_File regfile(
+        .clk(clk),
         .read_addr1(reg_radd0),
         .read_addr2(reg_radd1),
         .read_data1(reg1data),
@@ -109,7 +111,7 @@ module cpu(
         .out(regwrdata)
         );
         
-    alucontrol_unit alucntrl(.instruction(instruction),
+    alu_control alucntrl(.instruction(instruction),
         .ALUOp(alu_op),
         .ALUFn(alu_control_otp)
         );
