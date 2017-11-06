@@ -1,24 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 29.09.2017 02:18:40
-// Design Name: 
-// Module Name: cpu
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module cpu(
 input clk,
@@ -73,7 +53,7 @@ input rst
     .out(sign_extend));
 assign reg_radd0 = instruction[25:21];
 assign reg_radd1 = instruction[20:16];
-mux2x1 reg_wr_dst(.select(reg_wr_add_control),
+regmux2x1 reg_wr_dst(.select(reg_wr_add_control),
 .in0(reg_radd1),
 .in1(instruction[15:11]),
 .out(reg_waddr));
@@ -105,6 +85,16 @@ ALU alu(.a(reg1data),
  .in0(data_mem_out),
  .in1(alu_otp),
  .out(regwrdata));
+ alucontrol_unit alucntrl(.instruction(instruction),
+ .ALUOp(alu_op),
+ .ALUFn(alu_contol_otp));
+ MainMemoryModule instructionMemory(
+     .clk(clk),
+     .address(pc_instaddr),
+     .readEnable(1),
+     .writeEnable(0),
+     .dataIn(0),
+     .dataOut(instruction));
  always @(posedge clk)
      begin
          $display("INSTRUCTION=%h - radd0=%d - radd1=%d - reg_rdata0=%-d - reg_rdata1=%-d",

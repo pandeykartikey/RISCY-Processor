@@ -1,24 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 26.09.2017 22:44:01
-// Design Name: 
-// Module Name: InstructionMemoryModule
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module InstructionMemoryModule(
     input wire clk,
@@ -30,7 +10,7 @@ MainMemoryModule instructionMemory(
     .address(InstructionAddress),
     .readEnable(1),
     .writeEnable(0),
-    .dataIn(0),
+    .dataIn(32'h00000000),
     .dataOut(instruction));
 
 endmodule

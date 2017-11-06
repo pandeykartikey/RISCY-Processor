@@ -1,24 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 26.09.2017 22:10:57
-// Design Name: 
-// Module Name: MainMemoryModule
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module MainMemoryModule(
     input wire clk,
@@ -28,14 +8,20 @@ module MainMemoryModule(
     input wire [31:0] dataIn,
     output wire [31:0] dataOut
     );
-reg [31:0] memory[8*1024:0];
+reg [7:0] memory[(2**32) - 1:0];
 
 always @(posedge clk) begin
     if(writeEnable & !readEnable) begin
-        memory[address] = dataIn;
+        memory[address] <= dataIn[31:24];
+        memory[address + 1'b1] <= dataIn[23:16];
+        memory[address + 2'b10] <= dataIn[15:8];
+        memory[address + 2'b11] <= dataIn[7:0];
     end 
 end
 
-assign dataOut = memory[address]; 
+assign dataOut[31:24] = memory[address];
+assign dataOut[23:16] = memory[address + 1'b1]
+assign dataOut[15:8] = memory[address + 2'b10]
+assign dataOut[7:0] = memory[address + 2'b11]
 
 endmodule
