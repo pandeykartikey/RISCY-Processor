@@ -42,7 +42,7 @@ always @(instruction)
         MemToReg = controlSignals[opcode][8];
         RegWrite = controlSignals[opcode][7];
         MemWrite = controlSignals[opcode][6];
-        MemRead  = controlSignals[opcode][5]
+        MemRead  = controlSignals[opcode][5];
         Branch   = controlSignals[opcode][4];
         ALUOp    = controlSignals[opcode][3:1];
         Jump     = controlSignals[opcode][0];

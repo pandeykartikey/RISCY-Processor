@@ -10,7 +10,7 @@ module cpu(
     wire reg_wr_add_control;
     wire  datamem_readen;
     wire  datawr_select;
-    wire [1:0] alu_op;
+    wire [2:0] alu_op;
     wire datamemwriteen;
     wire alusrcselect;
     wire reg_wr_en;
@@ -34,14 +34,24 @@ module cpu(
     ProgramCounter prcount (
         .clk(clk),
         .reset(rst),
-        .pc(pc_instaddr),
         .pcControl(pccontrol),
         .jumpAddress(instruction[25:0]),
         .branchOffset(instruction[15:0]),
-        .regAddress(reg1data)
+        .regAddress(reg1data),
+        .pc(pc_instaddr)
         );
-    
-    control_unit signals(.instruction(instruction),
+        
+    MainMemoryModule instructionMemory(
+        .clk(clk),
+        .address(pc_instaddr),
+        .readEnable(1'b1),
+        .writeEnable(1'b0),
+        .dataIn(32'h000000),
+        .dataOut(instruction)
+        );
+        
+    control_unit signals(
+        .instruction(instruction),
         .RegDst(reg_wr_add_control),
         .MemRead(datamem_readen),
         .MemToReg(datawr_select),
@@ -53,10 +63,10 @@ module cpu(
         .Jump(jump_control)
         );
     
-    signExtension ext(
-        .in(instruction[15:0]),
-        .out(sign_extend)
-        );
+
+
+
+
 
     assign reg_radd0 = instruction[25:21];
 
@@ -73,23 +83,31 @@ module cpu(
         .clk(clk),
         .read_addr1(reg_radd0),
         .read_addr2(reg_radd1),
-        .read_data1(reg1data),
-        .read_data2(reg2data),
         .write_addr(reg_waddr),
         .write_data(regwrdata),
-        .write_enable(reg_wr_en)
+        .write_enable(reg_wr_en),
+        .read_data1(reg1data),
+        .read_data2(reg2data)
         );
 
-    signExtension sign(.in(instruction[15:0]),
+    signExtension sign(
+        .in(instruction[15:0]),
         .out(sign_extend)
         );
 
-    mux2x1 alusrc_select(.select(alusrcselect),
+    mux2x1 alusrc_select(
+        .select(alusrcselect),
         .in0(reg2data),
         .in1(sign_extend),
         .out(alu_operand)
         );
-
+        
+    alu_control alucntrl(
+        .instruction(instruction),
+        .ALUOp(alu_op),
+        .ALUFn(alu_control_otp)
+        );
+        
     ALU alu(.a(reg1data),
         .b(alu_operand),
         .alufn(alu_control_otp),
@@ -110,30 +128,15 @@ module cpu(
         .in1(alu_otp),
         .out(regwrdata)
         );
-        
-    alu_control alucntrl(.instruction(instruction),
-        .ALUOp(alu_op),
-        .ALUFn(alu_control_otp)
-        );
 
-    MainMemoryModule instructionMemory(
-        .clk(clk),
-        .address(pc_instaddr),
-        .readEnable(1'b1),
-        .writeEnable(1'b0),
-        .dataIn(32'h000000),
-        .dataOut(instruction)
-        );
+    
  
  always @(posedge clk)
      begin
-         $display("INSTRUCTION=%h - reg_radd0=%d - reg_radd1=%d - reg1data=%d - alu_operand=%d - alu_op=%d - alu_control_otp=%d - alu_otp=%d",
-             instruction,
-             instruction[25:21], 
-             instruction[20:16], 
-             reg1data, 
-             alu_operand,
-             alu_op,
+         $display("INSTRUCTION=%h - reg_radd1=%d - reg1data=%d  - alu_control_otp=%d - alu_otp=%d",
+             instruction, 
+             reg2data, 
+             reg1data,
              alu_control_otp,
              alu_otp);
      end
