@@ -20,8 +20,8 @@ always @(posedge clk) begin
 end
 
 assign dataOut[31:24] = memory[address];
-assign dataOut[23:16] = memory[address + 1'b1]
-assign dataOut[15:8] = memory[address + 2'b10]
-assign dataOut[7:0] = memory[address + 2'b11]
+assign dataOut[23:16] = memory[address + 1'b1];
+assign dataOut[15:8] = memory[address + 2'b10];
+assign dataOut[7:0] = memory[address + 2'b11];
 
 endmodule

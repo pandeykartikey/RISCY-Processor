@@ -5,12 +5,14 @@ module InstructionMemoryModule(
     input wire [31:0] instructionAddress,
     output wire [31:0] instruction
     );
+
 MainMemoryModule instructionMemory(
     .clk(clk),
-    .address(InstructionAddress),
+    .address(instructionAddress),
     .readEnable(1),
     .writeEnable(0),
     .dataIn(32'h00000000),
-    .dataOut(instruction));
+    .dataOut(instruction)
+);
 
 endmodule
