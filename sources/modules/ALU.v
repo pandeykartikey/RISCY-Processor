@@ -126,6 +126,12 @@ module ShiftUnit(a,b,otp,alufn,zero,overflow);
                 zero = (otp == 0)?1:0;
                 overflow = 0;
             end
+        2'b11: //slt
+            begin
+                otp = (a<b)? 1:0;
+                zero = (otp == 0)?1:0;
+                overflow = 0;
+            end
         endcase
     end
 endmodule   
