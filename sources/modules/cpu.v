@@ -16,7 +16,7 @@ input rst
     wire reg_wr_en;
     wire branch_control;
     wire jump_control;
-    wire sign_extend;
+    wire [31:0] sign_extend;
     wire [31:0] reg1data;
     wire [31:0] reg2data;
     wire [31:0] regwrdata;
@@ -24,7 +24,7 @@ input rst
     wire [4:0] reg_radd1;
     wire [4:0] reg_waddr;
     wire [31:0] alu_operand;
-    wire [5:0] alu_contol_otp;
+    wire [5:0] alu_control_otp;
     wire [31:0] alu_otp;
     wire alu_zero;
     wire overflow_signal;
@@ -65,13 +65,15 @@ Register_File regfile(.clk(clk),
 .write_addr(reg_waddr),
 .write_data(regwrdata),
 .write_enable(reg_wr_en));
+signExtension sign(.in(instruction[15:0]),
+.out(sign_extend));
 mux2x1 alusrc_select(.select(alusrcselect),
 .in0(reg2data),
 .in1(sign_extend),
 .out(alu_operand));
 ALU alu(.a(reg1data),
 .b(alu_operand),
-.alufn(alu_contol_otp),
+.alufn(alu_control_otp),
 .otp(alu_otp),
 .zero(alu_zero),
 .overflow(overflow_signal));
@@ -87,21 +89,25 @@ ALU alu(.a(reg1data),
  .out(regwrdata));
  alucontrol_unit alucntrl(.instruction(instruction),
  .ALUOp(alu_op),
- .ALUFn(alu_contol_otp));
+ .ALUFn(alu_control_otp));
  MainMemoryModule instructionMemory(
      .clk(clk),
      .address(pc_instaddr),
-     .readEnable(1),
-     .writeEnable(0),
-     .dataIn(0),
+     .readEnable(1'b1),
+     .writeEnable(1'b0),
+     .dataIn(32'h000000),
      .dataOut(instruction));
  always @(posedge clk)
      begin
-         $display("INSTRUCTION=%h - radd0=%d - radd1=%d - reg_rdata0=%-d - reg_rdata1=%-d",
+         $display("INSTRUCTION=%h - reg_radd0=%d - reg_radd1=%d - reg1data=%d - alu_operand=%d - alu_op=%d - alu_control_otp=%d - alu_otp=%d",
+
              instruction,
              instruction[25:21], 
              instruction[20:16], 
              reg1data, 
-             reg2data);
+             alu_operand,
+             alu_op,
+             alu_control_otp,
+             alu_otp);
      end
 endmodule

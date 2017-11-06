@@ -12,9 +12,10 @@ assign fnField = instruction[5:0];
 
 always @(instruction)
     begin
+              ALUFn = instruction[5:0];
         if (ALUOp == 2'b10)
             begin
-                ALUFn = fnField;
+             ALUFn = instruction[5:0];
             end
     end
 
