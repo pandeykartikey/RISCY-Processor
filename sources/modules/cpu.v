@@ -30,6 +30,13 @@ module cpu(
     wire        jump_control;
     wire        alu_zero;
     wire        overflow_signal;
+    reg pcsrc;
+    wire jump_s4;
+    wire [31:0] jaddr_s4;
+    reg [1:0] forward_a;
+    reg [1:0] forward_b;
+    wire [31:0] branchOffset_s4;
+
 
     //STAGE5 SE JO WRITE KE LIYE CONTROL, REG, OR DATA AAEGA YE VO HAI(UPAR WALE USE NAHI KIYE NAYE BANAYE HAI AGAR CHALTA HAI TO UPAR WALE DEKH KE HATA DENGE)
     wire        RegWriteControl_s5;
@@ -85,7 +92,7 @@ module cpu(
         if (stall_s1_s2) 
             pc <= pc;
         else if (pcsrc == 1'b1)
-            pc <= baddr_s4;
+            pc <= branchOffset_s4;
         else if (jump_s4 == 1'b1)
             pc <= jaddr_s4;
         else
@@ -252,11 +259,13 @@ module cpu(
     );
         
     reg [31:0] fw_reg1data_s3;
+    wire [31:0] alu_otp_s4;
+
     always @(*)
     case (forward_a)
-            2'd1: fw_data1_s3 = alu_otp_s4;
-            2'd2: fw_data1_s3 = writeData_s5;
-         default: fw_data1_s3 = reg1data_s3;
+            2'd1: fw_reg1data_s3 = alu_otp_s4;
+            2'd2: fw_reg1data_s3 = writeData_s5;
+         default: fw_reg1data_s3 = reg1data_s3;
     endcase
     
     //ALU MAIN JO CONTROL SIGNAL JANA HAI VO AB STAGE3 WALA HAI BAS
@@ -269,20 +278,19 @@ module cpu(
     );
 
     //ALU KE OUTPUT AAGE BHEJ DIYE HAI MAST
-    wire [31:0] alu_otp_s4;
     wire alu_zero_s4;
     regr #(.N(33)) reg_s4_aluotp(.clk(clk), 
                         .clear(flush_s2), 
                         .hold(stall_s1_s2),
                         .in({alu_otp,alu_zero}), 
-                        .out(alu_otp_s4,alu_zero_s4));
+                        .out({alu_otp_s4,alu_zero_s4}));
 
     reg [31:0] fw_reg2data_s3;
     always @(*)
     case (forward_b)
-            2'd1: fw_reg2data2_s3 = alu_otp_s4;
-            2'd2: fw_reg2data2_s3 = writeData_s5;
-         default: fw_reg2data2_s3 = reg2data_s3;
+            2'd1: fw_reg2data_s3 = alu_otp_s4;
+            2'd2: fw_reg2data_s3 = writeData_s5;
+         default: fw_reg2data_s3 = reg2data_s3;
     endcase
 
     //REG2 KA DATA AAGE FORWARD KAR RAHA HU
@@ -325,12 +333,10 @@ module cpu(
                         .in({reg_wr_en_s3,datamemwriteen_s3,datawr_select_s3,datamem_readen_s3,branch_control_s3}), 
                         .out({reg_wr_en_s4,datamemwriteen_s4,datawr_select_s4,datamem_readen_s4,branch_control_s4}));
     
-    wire [31:0] jaddr_s4;
     regr #(.N(32)) reg_jaddr_s4(.clk(clk), .clear(flush_s3), .hold(1'b0),
                 .in(jaddr_s3), .out(jaddr_s4));
 
     
-    wire jump_s4;
     regr #(.N(1)) reg_jump_s4(.clk(clk), .clear(flush_s3), .hold(1'b0),
                 .in(jump_s3),
                 .out(jump_s4));
@@ -339,7 +345,7 @@ module cpu(
     //STAGE3 ENDS
     //STAGE4 BEGINS
     //NEECHE JO WRITE DESTINATION REG HAI USKO PHIR AAGE BHEJ DIYA HAI
-    reg pcsrc;
+
     always @(*) begin
          pcsrc <= branch_control_s4 & alu_zero_s4;
     end
@@ -352,11 +358,11 @@ module cpu(
                         .out(reg_waddr_s5));
 
     wire reg_wr_en_s5,datawr_select_s5;
-    regr #(.N(2)) reg_s5_mainMemory(.clk(clk), 
+    regr #(.N(2)) reg_s5_controls(.clk(clk), 
                         .clear(flush_s2), 
                         .hold(stall_s1_s2),
-                        .in({alu_otp_s4,data_mem_out}), 
-                        .out({alu_otp_s5,data_mem_out_s5}));
+                        .in({reg_wr_en_s4,datawr_select_s4}), 
+                        .out({reg_wr_en_s5,datawr_select_s5}));
 
     MainMemoryModule data_mem(.clk(clk),
         .address(alu_otp_s4),
@@ -381,7 +387,7 @@ module cpu(
     //WRITE SELECT MUX HAI WITH NAYA CONTROL SIGNAL AND DATA TO BE COMPARED
     mux2x1 write_select(.select(datawr_select_s5),
         .in1(data_mem_out_s5),
-        .in0(alu_otp_5),
+        .in0(alu_otp_s5),
         .out(regwrdata)
     );
     assign writeData_s5 = regwrdata;
@@ -393,8 +399,6 @@ module cpu(
     // stage 3 (MEM) -> stage 2 (EX)
     // stage 4 (WB) -> stage 2 (EX)
 
-    reg [1:0] forward_a;
-    reg [1:0] forward_b;
     always @(*) begin
         // If the previous instruction (stage 4) would write,
         // and it is a value we want to read (stage 3), forward it.
@@ -420,7 +424,7 @@ module cpu(
 
     //STALLING
     always @(*) begin
-        if (datamem_readen_s3== 1'b1 && ((instruction_s2[20:16] == rt_s3) || (rs == rt_s3)) ) begin
+        if (datamem_readen_s3== 1'b1 && ((instruction_s2[20:16] == rt_s3) || (instruction_s2[25:21] == rt_s3)) ) begin
             stall_s1_s2 <= 1'b1;  // perform a stall
         end else
             stall_s1_s2 <= 1'b0;  // no stall
