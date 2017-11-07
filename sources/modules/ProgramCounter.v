@@ -1,4 +1,24 @@
 `timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 27.09.2017 13:00:07
+// Design Name: 
+// Module Name: ProgramCounter
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
 
 module ProgramCounter(
     input clk,
@@ -8,7 +28,7 @@ module ProgramCounter(
     input [15:0] branchOffset,
     input [31:0] regAddress,
     output reg [31:0] pc 
-);
+    );
     wire [31:0] pcPlus4;
     initial
     begin

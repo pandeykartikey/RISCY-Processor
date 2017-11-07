@@ -30,7 +30,6 @@ module cpu(
     wire overflow_signal;
     wire [31:0] data_mem_in;
     wire [31:0] data_mem_out;   
-    
     ProgramCounter prcount (
         .clk(clk),
         .reset(rst),
@@ -124,20 +123,22 @@ module cpu(
         .dataOut(data_mem_out)
         );
     mux2x1 write_select(.select(datawr_select),
-        .in0(data_mem_out),
-        .in1(alu_otp),
+        .in1(data_mem_out),
+        .in0(alu_otp),
         .out(regwrdata)
         );
 
     
- 
+     assign data_mem_in=reg2data;
  always @(posedge clk)
      begin
-         $display("INSTRUCTION=%h - reg_radd1=%d - reg1data=%d  - alu_control_otp=%d - alu_otp=%d",
+         $display("INSTRUCTION=%h - reg1data=%d - reg2data=%d  - alu_control_otp=%d - datamemwriteen=%d - data_mem_in=%d - alu_otp=%d",
              instruction, 
-             reg2data, 
-             reg1data,
+             reg1data, 
+             reg2data,
              alu_control_otp,
+             datamemwriteen,
+             data_mem_in,
              alu_otp);
      end
 endmodule

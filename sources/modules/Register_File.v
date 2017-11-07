@@ -42,8 +42,9 @@ assign read_data2 = (read_addr2 != 5'b11111) ? Register_File[read_addr2] : 32'h0
 
 always @(posedge clk)
     begin
-   Register_File[1]=32'h00000004;
-   Register_File[2]=32'h00000005;
+   Register_File[1]=32'h00000003;
+   Register_File[2]=32'h00000002;
+   Register_File[4]=32'h00000001;
         if (write_enable) begin
             if (write_addr != 5'b11111) begin
                 Register_File[write_addr] = write_data;   

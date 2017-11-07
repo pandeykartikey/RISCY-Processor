@@ -26,7 +26,7 @@ begin
     controlSignals[6'b010011] = 11'b00000010010; // beq
     //controlSignals[6'b010100] = 11'b; //bne
     controlSignals[6'b010101] = 11'b01111000000; // lw
-    controlSignals[6'b010110] = 11'b01000100000; // sw
+    controlSignals[6'b010110] = 11'b01001000000; // sw
     controlSignals[6'b010111] = 11'b10010000100; // slt
     controlSignals[6'b011000] = 11'b01010001100; // slti
     controlSignals[6'b011001] = 11'b00000011111; // slti
