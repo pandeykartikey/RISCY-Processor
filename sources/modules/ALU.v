@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
 
-module ALU(a,b,alufn,otp,zero,overflow);
+module ALU(a, b, alufn, otp, zero, overflow);
+
     input wire [31:0] a;
     input wire [31:0] b;
     input wire [5:0] alufn; // choosing 6 bit op code
@@ -31,6 +32,7 @@ module ALU(a,b,alufn,otp,zero,overflow);
             end
         endcase
     end
+
 endmodule
 
 module ArithmeticUnit(a,b,alufn,otp,zero,overflow);
@@ -123,6 +125,12 @@ module ShiftUnit(a,b,otp,alufn,zero,overflow);
         2'b01: //shiftright
             begin
                 otp = a>>b;
+                zero = (otp == 0)?1:0;
+                overflow = 0;
+            end
+        2'b11: //slt
+            begin
+                otp = (a<b)? 1:0;
                 zero = (otp == 0)?1:0;
                 overflow = 0;
             end
