@@ -11,6 +11,7 @@ module control_unit(
     output reg       Branch,    // 1 if instruction is beq and thus decides Program Counter
     output reg [2:0] ALUOp,     // ALU Opcode
     output reg       Jump       // 1 if insturction is J type
+
 );
 
 wire [5:0] opcode;
@@ -29,7 +30,7 @@ begin
     controlSignals[6'b010110] = 11'b01001000000; // sw
     controlSignals[6'b010111] = 11'b10010000100; // slt
     controlSignals[6'b011000] = 11'b01010001100; // slti
-    controlSignals[6'b011001] = 11'b00000011111; // slti
+    controlSignals[6'b110000] = 11'b00000011111; // jump
     
 
 
@@ -43,8 +44,9 @@ always @(instruction)
         RegWrite = controlSignals[opcode][7];
         MemWrite = controlSignals[opcode][6];
         MemRead  = controlSignals[opcode][5];
-        Branch   = controlSignals[opcode][4];
-        ALUOp    = controlSignals[opcode][3:1];
-        Jump     = controlSignals[opcode][0];
+        Branch   = controlSignals[opcode][4]; 
+        ALUOp    = controlSignals[opcode][3:1]; 
+        Jump     = controlSignals[opcode][0]; 
+   
     end
-endmodule
+endmodule 

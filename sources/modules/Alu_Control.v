@@ -7,7 +7,7 @@ module alu_control(
     output reg [5:0]  ALUFn
 );
 
-always @(*)
+always @(instruction or ALUOp)
 begin
     if (ALUOp == 3'b010) begin
         ALUFn <= instruction[5:0];
