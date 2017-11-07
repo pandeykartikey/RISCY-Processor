@@ -14,7 +14,7 @@ module cpu(
     wire [31:0] regwrdata;
     wire [31:0] data_mem_in;
     wire [31:0] data_mem_out;   
-    wire [1:0]  pccontrol;
+    wire [1:0]  pcControl;
     wire [2:0]  alu_op;
     wire [4:0]  reg_radd0;
     wire [4:0]  reg_radd1;
@@ -31,18 +31,20 @@ module cpu(
     wire        alu_zero;
     wire        overflow_signal;
 
-
+    
     ProgramCounter prcount (
         .clk(clk),
         .reset(rst),
-        .pcControl(pccontrol),
+        .zero(alu_zero),
+        .branch(branch_control),
+        .jump(jump_control),
         .jumpAddress(instruction[25:0]),
         .branchOffset(instruction[15:0]),
         .regAddress(reg1data),
         .pc(pc_instaddr)
     );
         
-    MainMemoryModule instructionMemory(
+    InstructionMemoryModule instructionMemory(
         .clk(clk),
         .address(pc_instaddr),
         .readEnable(1'b1),
@@ -67,7 +69,8 @@ module cpu(
     assign reg_radd0 = instruction[25:21];
 
     assign reg_radd1 = instruction[20:16];
-
+    
+    
     regmux2x1 reg_wr_dst(
         .select(reg_wr_add_control),
         .in0(reg_radd1),

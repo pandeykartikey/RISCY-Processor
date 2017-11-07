@@ -40,7 +40,7 @@ reg [31:0] Register_File [31:0]; // 32 - 32 Bit Registers
 assign read_data1 = (read_addr1 != 5'b11111) ? Register_File[read_addr1] : 32'h00000000;
 assign read_data2 = (read_addr2 != 5'b11111) ? Register_File[read_addr2] : 32'h00000000;
 
-always @(posedge clk)
+always @(read_addr1 or read_addr2 or write_addr)
     begin
    Register_File[1]=32'h00000003;
    Register_File[2]=32'h00000002;
