@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
 
-module ALU(a,b,alufn,otp,zero,overflow);
+module ALU(a, b, alufn, otp, zero, overflow);
+
     input wire [31:0] a;
     input wire [31:0] b;
     input wire [5:0] alufn; // choosing 6 bit op code
@@ -31,6 +32,7 @@ module ALU(a,b,alufn,otp,zero,overflow);
             end
         endcase
     end
+
 endmodule
 
 module ArithmeticUnit(a,b,alufn,otp,zero,overflow);
