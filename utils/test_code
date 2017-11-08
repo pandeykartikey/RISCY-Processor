@@ -1,0 +1,12 @@
+:main;
+ADD $r1, $r2, $r3;
+ADD $r4, $r5, $r6;
+SUB $r1, $r1, $r4;
+ADDI $r1, $r1, 0x40;
+BEQ $r1, $r2, branch;
+ADDI $r5, $r5, 0x10;
+SUB $r5, $r5, $r4;
+
+:branch;
+ADD $r1, $r1, $r4;
+SUB $r2, $r1, $r8;

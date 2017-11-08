@@ -140,11 +140,19 @@ def convertInstruction(instruction, addr):
     else:
         handleError(1, instruction)
 
-def writeAssembledCode(instrArr, filePath):
+def writeAssembledCode(instrArr, filePath, verilogMemory):
     newFilePath = filePath + '.bin'
-    open(newFilePath, 'w').write('\n'.join(instrArr))  
+    if verilogMemory:
+        binarySeqVerilog = ''
+        i = 0
+        for instr in instrArr:
+            binarySeqVerilog += 'memory[%d] <= %s;\n' % (i, instr)
+            i += 1
+        open(newFilePath, 'w').write(binarySeqVerilog)
+    else:
+        open(newFilePath, 'w').write('\n'.join(instrArr))  
 
-def main(filePath):
+def main(filePath, verilogMemory):
     with open(filePath, "r") as program:
         content = program.read()
         strippedContent = stripContent(content)
@@ -160,14 +168,18 @@ def main(filePath):
                 print instruction, " : ", bitStreamInstruction
                 assembledInstr.append(bitStreamInstruction)
             currAddr += 1
-    writeAssembledCode(assembledInstr, filePath)
+    writeAssembledCode(assembledInstr, filePath, verilogMemory)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-f",
                         "--file",
-                        help="Path of the file to be interpreted")
+                        help="[*] Path of the file to be interpreted")
+    parser.add_argument("-m",
+                        "--verilogmemory",
+                        help="[*] Save the binary code to file as verilog memory array decleration",
+                        action="store_true")
     args = parser.parse_args()
     filePath = ""
     try:
@@ -180,4 +192,4 @@ if __name__ == "__main__":
         except:
             print "[-] The file path provided is not valid"
             raise SystemExit()
-    main(filePath)
+    main(filePath, args.verilogmemory)
