@@ -133,8 +133,7 @@ def convertInstruction(instruction, addr):
                 branchOffset = '{0:016b}'.format(getLabelOffset(compArr[3], addr))
                 return opcode + r1 + r2 + branchOffset
             else:
-                # Third label is an immediate value
-                imm = '{0:16b}'.format(getIntegerValue(compArr[3]))
+                imm = '{0:016b}'.format(getIntegerValue(compArr[3]))
                 return opcode + r1 + r2 + imm
         else:
             handleError(0, instruction)

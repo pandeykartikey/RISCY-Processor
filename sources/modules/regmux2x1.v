@@ -4,8 +4,17 @@ module regmux2x1(in0, in1, select, out);
     input wire select; 
     input wire [4:0] in0;
     input wire [4:0] in1;
-    output wire[4:0] out;
+    output reg[4:0] out;
 
-    assign out = (select == 0) ? in0 : in1;
+    always @(*)
+    begin
+        if(select == 0)
+        begin
+            out <= in0;
+        end
+        else begin
+            out <= in1;
+        end
+    end
 
 endmodule

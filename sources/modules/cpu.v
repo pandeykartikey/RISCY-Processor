@@ -107,7 +107,9 @@ module cpu(
         .ALUFn(alu_control_otp)
     );
         
-    ALU alu(.a(reg1data),
+    ALU alu(
+        .clk(clk),
+        .a(reg1data),
         .b(alu_operand),
         .alufn(alu_control_otp),
         .otp(alu_otp),
@@ -133,7 +135,8 @@ module cpu(
     assign data_mem_in=reg2data;
     always @(posedge clk)
         begin
-            $display("INSTRUCTION=%h - reg1data=%d - reg2data=%d  - alu_control_otp=%d - datamemwriteen=%d - data_mem_in=%d - alu_otp=%d",
+            $display("reg_radd0- %d - reg_radd1 - %d",reg_radd0,reg_radd1);
+            $display("INSTRUCTION=%h - reg1data=%h - reg2data=%h  - alu_control_otp=%d - datamemwriteen=%d - data_mem_in=%d - alu_otp=%h",
                 instruction, 
                 reg1data, 
                 reg2data,

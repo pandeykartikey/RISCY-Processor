@@ -22,6 +22,10 @@ module ProgramCounter(
     
     always @(posedge clk)
     begin
+        if(reset == 1)
+            pc <= 32'h00000000;
+        else
+        begin
         pcControl = ( branch & zero == 1)? 2'b10: 2'b00;
         pcControl = (jump)?2'b11:pcControl;
         
@@ -32,7 +36,7 @@ module ProgramCounter(
                 2'b10: pc <= pcPlus4 + {{14{branchOffset[15]}},branchOffset[15:0]};   //Branch address calculation.
                 default: pc<= pcPlus4;
             endcase
-        
-        $display("pc - %d clk -%d  reset- %d pcControl- %b",pc,clk,reset,pcControl);
+        end
+        // $display("pc - %d clk -%d  reset- %d pcControl- %b",pc,clk,reset,pcControl);
     end
 endmodule
