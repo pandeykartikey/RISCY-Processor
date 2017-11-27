@@ -22,7 +22,7 @@ initial
 begin
     controlSignals[6'b000000] = 11'b10010000100; // rtype
     controlSignals[6'b010000] = 11'b01010000110; // addi
-    controlSignals[6'b010001] = 11'b01010001000; // andi 
+    controlSignals[6'b010001] = 11'b01010001000; // andi
     controlSignals[6'b010010] = 11'b01010001010; // xori
     controlSignals[6'b010011] = 11'b00000010010; // beq
     //controlSignals[6'b010100] = 11'b; //bne
@@ -31,9 +31,6 @@ begin
     controlSignals[6'b010111] = 11'b10010000100; // slt
     controlSignals[6'b011000] = 11'b01010001100; // slti
     controlSignals[6'b110000] = 11'b00000011111; // jump
-    
-
-
 end
 
 always @(instruction)
@@ -44,9 +41,9 @@ always @(instruction)
         RegWrite = controlSignals[opcode][7];
         MemWrite = controlSignals[opcode][6];
         MemRead  = controlSignals[opcode][5];
-        Branch   = controlSignals[opcode][4]; 
-        ALUOp    = controlSignals[opcode][3:1]; 
-        Jump     = controlSignals[opcode][0]; 
-   
+        Branch   = controlSignals[opcode][4];
+        ALUOp    = controlSignals[opcode][3:1];
+        Jump     = controlSignals[opcode][0];
+
     end
-endmodule 
+endmodule
